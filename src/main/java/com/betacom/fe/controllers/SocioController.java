@@ -1,0 +1,103 @@
+package com.betacom.fe.controllers;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.jspecify.annotations.Nullable;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.betacom.fe.dto.inputs.SocioReq;
+import com.betacom.fe.dto.outputs.AttivitaDTO;
+import com.betacom.fe.dto.outputs.SocioDTO;
+import com.betacom.fe.response.Resp;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@RequiredArgsConstructor
+@Controller
+public class SocioController {
+	
+	private final WebClient clientWeb;
+
+	@GetMapping("listSocio")
+	public ModelAndView listSocio(
+			@RequestParam(required = false) Integer id,
+			@RequestParam(required = false) String nome,
+			@RequestParam(required = false) String cognome,
+			@RequestParam(required = false) Integer attivita			
+			) {
+		ModelAndView mav = new ModelAndView("listSocio");
+		
+		List<SocioDTO> soci = clientWeb.get()
+				 .uri(uriBuilder -> uriBuilder
+					    .path("socio/list")
+					    .queryParamIfPresent("id", Optional.ofNullable(id))
+					    .queryParamIfPresent("nome", Optional.ofNullable(nome))
+					    .queryParamIfPresent("cognome", Optional.ofNullable(cognome))
+					    .queryParamIfPresent("attivita", Optional.ofNullable(attivita))
+					    .build())
+					.retrieve()
+					.bodyToMono(new ParameterizedTypeReference<List<SocioDTO>>() {})
+					.block();
+					
+		List<AttivitaDTO> att = clientWeb.get()
+				 .uri(uriBuilder -> uriBuilder
+					    .path("atttivita/list")
+					    .build())
+					.retrieve()
+					.bodyToMono(new ParameterizedTypeReference<List<AttivitaDTO>>() {})
+					.block();
+		
+		
+		mav.addObject("listsocio", soci);
+		mav.addObject("param", new SocioReq());
+		mav.addObject("listAttivita",att);
+		
+		return mav;
+	}
+	
+	
+	@GetMapping("createSocio")
+	public ModelAndView createSocio(Model model) {
+		ModelAndView mav = new ModelAndView("createSocio");
+		if (!model.containsAttribute("socio")) {
+	        model.addAttribute("socio", new SocioReq());
+	    }
+		return mav;
+	}
+	
+	@PostMapping("saveSocio")
+	public String saveSocio(@ModelAttribute("socio") SocioReq req,  RedirectAttributes ra){
+
+		ResponseEntity<Resp> response = clientWeb.post()
+				.uri("socio/create")
+				.bodyValue(req)
+				.exchangeToMono(resp -> resp.toEntity(Resp.class) )
+				.block();
+
+		if (!response.getStatusCode().is2xxSuccessful()) {
+			 ra.addFlashAttribute("errorMsg", response.getBody().getMsg());
+			 ra.addFlashAttribute("socio", req);
+			 log.debug(req.toString());
+			 return "redirect:/createSocio";
+		}
+
+		return "redirect:/list";
+}	
+	
+	
+}

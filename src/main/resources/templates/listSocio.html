@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+<title>Elenco socio</title>
+</head>
+<body>
+	<h1>Elenco socio</h1>
+
+	<div class="conatainer mt-3" align="center">
+
+		<form th:action="@{listSocio}" th:object="${param}"
+		      method="get"
+		      class="row g-3 align-items-center mb-4"
+		      style="width:60%; margin:auto;">
+		
+		    <div class="col-auto">
+		        <input type="text" name="nome" class="form-control"
+		               placeholder="nome" th:value="${param.nome}">
+		    </div>
+		
+		    <div class="col-auto">
+		        <input type="text" name="cognome" class="form-control"
+		               placeholder="cognome" th:value="${param.cognome}">
+		    </div>
+		
+		    <div class="col-auto">
+		        <select class="form-select" th:field="*{attivita}">
+		            <option value="">Selezione attivita</option>
+		            <option th:each="att : ${listAttivita}"
+		                    th:value="${att.id}"
+		                    th:text="${att.description}">
+		            </option>
+		        </select>
+		    </div>
+		
+		    <div class="col-auto ms-auto">
+		        <button type="submit" class="btn btn-primary">Cerca</button>
+		        <a th:href="@{createSocio}" class="btn btn-secondary">Create nuovo socio</a>
+		    </div>
+
+		</form>
+
+	<table class="table table-secondary" style="width: 60%; text-align: center">
+		<thead>
+			<tr>
+				<th>Nome</th>
+				<th>Cognome</th>
+				<th>Email</th>
+				<th>Codice fiscale</th>
+			</tr>
+		</thead>
+		<tbody>
+		<tr  th:each="socio : ${listsocio}">
+			<td align="center" >[[${socio.nome}]]</td>
+			<td align="center">[[${socio.cognome}]]</td>
+			<td align="center">[[${socio.email}]]</td>
+			<td align="center">[[${socio.codiceFiscale}]]</td>			
+		</tr>
+		</tbody>
+	</table>
+	</div>
+</body>
+</html>
