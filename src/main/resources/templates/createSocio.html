@@ -7,13 +7,15 @@
 <title>Create Socio</title>
 </head>
 <body>
-<h1>Create socio</h1>
+	<nav th:insert="~{fragments/navigation :: block-navigation(${titolo})}"></nav>
+
 
 	<div class="conatainer mt-3" align="center">
 	<div th:if="${errorMsg}" class="alert alert-danger" th:text="${errorMsg}"></div>
 	<form class="form.content" th:action="@{saveSocio}" th:object="${socio}" 
 				method="post"
 				style="width:50%; margin:auto;">
+		<input type="hidden" th:field="*{id}">
 	
 		<table class="table table-secondary m-25">
 			<tr>
@@ -35,6 +37,13 @@
 		</table>
 		<div clas="mt-4" align="center">
 			<button type="submit" class="btn btn-primary">Registra Socio</button>
+			<a  th:if="*{id} != null" class="btn btn-danger"
+					th:href="@{removeSocio(id=*{id})}"
+					onclick="return confirm('Sei sicuro di voler rimuovere questo socio?')">
+					<span>Rimuovere socio</span>
+			
+			</a>
+			
 		</div>		
 	</form>	
 	</div>

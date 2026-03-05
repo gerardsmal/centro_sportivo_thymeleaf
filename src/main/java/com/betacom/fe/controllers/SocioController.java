@@ -3,9 +3,8 @@ package com.betacom.fe.controllers;
 import java.util.List;
 import java.util.Optional;
 
-import org.jspecify.annotations.Nullable;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -22,6 +20,7 @@ import com.betacom.fe.dto.inputs.SocioReq;
 import com.betacom.fe.dto.outputs.AttivitaDTO;
 import com.betacom.fe.dto.outputs.SocioDTO;
 import com.betacom.fe.response.Resp;
+
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -77,14 +76,48 @@ public class SocioController {
 		if (!model.containsAttribute("socio")) {
 	        model.addAttribute("socio", new SocioReq());
 	    }
+		model.addAttribute("titolo","Creazione nuovo socio");
+		return mav;
+	}
+	
+	@GetMapping("updateSocio")
+	public ModelAndView createSocio(@RequestParam(required = true) Integer id,   Model model) {
+		ModelAndView mav = new ModelAndView("createSocio");
+		
+		SocioDTO soc = clientWeb.get()
+				 .uri(uriBuilder -> uriBuilder
+					.path("socio/findById")
+					.queryParam("id", id)
+					.build())
+				 .retrieve()
+				 .bodyToMono(SocioDTO.class)
+				 .block();
+		
+		log.debug("nome {} cogmome {}", soc.getNome(), soc.getCognome());
+		if (!model.containsAttribute("socio")) {
+			model.addAttribute("socio", new SocioReq(soc.getId(),
+					soc.getCognome(),
+					soc.getNome(), 
+					soc.getCodiceFiscale(), 
+					soc.getEmail(), null));
+	    }
+
+		model.addAttribute("titolo","Aggiornamento " + soc.getNome() + " " + soc.getCognome() );
 		return mav;
 	}
 	
 	@PostMapping("saveSocio")
 	public String saveSocio(@ModelAttribute("socio") SocioReq req,  RedirectAttributes ra){
-
-		ResponseEntity<Resp> response = clientWeb.post()
-				.uri("socio/create")
+		
+		String operation = (req.getId() == null) ? "create" : "update";
+		String errorLink = (req.getId() == null) ? "createSocio" : "updateSocio";
+		
+		String url = "socio/" + operation;
+		
+		HttpMethod metodo = (req.getId() == null) ? HttpMethod.POST : HttpMethod.PUT;
+		
+		ResponseEntity<Resp> response = clientWeb.method(metodo)
+				.uri(url)
 				.bodyValue(req)
 				.exchangeToMono(resp -> resp.toEntity(Resp.class) )
 				.block();
@@ -92,12 +125,25 @@ public class SocioController {
 		if (!response.getStatusCode().is2xxSuccessful()) {
 			 ra.addFlashAttribute("errorMsg", response.getBody().getMsg());
 			 ra.addFlashAttribute("socio", req);
-			 log.debug(req.toString());
-			 return "redirect:/createSocio";
+			 return "redirect:/" + errorLink;
 		}
-
-		return "redirect:/list";
-}	
+		return "redirect:/listSocio";
+	}	
 	
+	@GetMapping("removeSocio")
+	public String removeSocio(@RequestParam (required = true) Integer id) {
+		log.debug("removeSocio {}", id);
+//		 .uri(uriBuilder -> uriBuilder
+//				 .path("socio/delete/{id}")
+//				 .build(id))
+		
+		Resp resp = clientWeb.delete()
+				 .uri("socio/delete/{id}", id)
+				 .retrieve()
+				 .bodyToMono(Resp.class)
+				 .block();
+		
+		return "redirect:/listSocio";
+	}
 	
 }

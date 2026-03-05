@@ -7,7 +7,8 @@
 <title>Elenco socio</title>
 </head>
 <body>
-	<h1>Elenco socio</h1>
+	<nav th:insert="~{fragments/navigation :: block-navigation('Elenco soci')}"></nav>
+
 
 	<div class="conatainer mt-3" align="center">
 
@@ -53,7 +54,9 @@
 			</tr>
 		</thead>
 		<tbody>
-		<tr  th:each="socio : ${listsocio}">
+		<tr  th:each="socio : ${listsocio}"
+			th:attr="data-id=${socio.id}"
+			class="clickable-row" style="cursor:pointer" >
 			<td align="center" >[[${socio.nome}]]</td>
 			<td align="center">[[${socio.cognome}]]</td>
 			<td align="center">[[${socio.email}]]</td>
@@ -62,5 +65,19 @@
 		</tbody>
 	</table>
 	</div>
+	<script>
+	  document.addEventListener("DOMContentLoaded", function () {
+	        const rows = document.querySelectorAll(".clickable-row");
+	        rows.forEach(row => {
+	            row.addEventListener("click", () => {
+	                const socioId = row.getAttribute("data-id");
+	                if (socioId) {
+	                    window.location.href = `/updateSocio?id=${socioId}`;
+	                }
+	            });
+	        });
+	    });
+	
+	</script>
 </body>
 </html>
