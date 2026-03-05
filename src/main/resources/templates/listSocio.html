@@ -51,6 +51,7 @@
 				<th>Cognome</th>
 				<th>Email</th>
 				<th>Codice fiscale</th>
+				<th>Certificato Medico</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -60,7 +61,12 @@
 			<td align="center" >[[${socio.nome}]]</td>
 			<td align="center">[[${socio.cognome}]]</td>
 			<td align="center">[[${socio.email}]]</td>
-			<td align="center">[[${socio.codiceFiscale}]]</td>			
+			<td align="center">[[${socio.codiceFiscale}]]</td>
+			<td align="center" class="noselect">
+ 				<a th:href="(${socio.certificato} == null) ? @{createCertificato(id=${socio.id})} : @{updateCertificato(id=${socio.certificato.id})}">	
+					<span th:text="(${socio.certificato} != null) ? (${socio.certificato.tipo} ? 'agonistico' : 'normale' ) : 'senza'"></span>
+				</a>
+			</td>			
 		</tr>
 		</tbody>
 	</table>
@@ -70,6 +76,9 @@
 	        const rows = document.querySelectorAll(".clickable-row");
 	        rows.forEach(row => {
 	            row.addEventListener("click", () => {
+	            	if (event.target.closest(".noselect")){
+	            		return;
+	            	}
 	                const socioId = row.getAttribute("data-id");
 	                if (socioId) {
 	                    window.location.href = `/updateSocio?id=${socioId}`;

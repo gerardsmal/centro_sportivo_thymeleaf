@@ -133,9 +133,6 @@ public class SocioController {
 	@GetMapping("removeSocio")
 	public String removeSocio(@RequestParam (required = true) Integer id) {
 		log.debug("removeSocio {}", id);
-//		 .uri(uriBuilder -> uriBuilder
-//				 .path("socio/delete/{id}")
-//				 .build(id))
 		
 		Resp resp = clientWeb.delete()
 				 .uri("socio/delete/{id}", id)
