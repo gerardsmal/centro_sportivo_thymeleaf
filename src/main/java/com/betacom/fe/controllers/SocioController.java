@@ -44,9 +44,9 @@ public class SocioController {
 		List<SocioDTO> soci = clientWeb.get()
 				 .uri(uriBuilder -> uriBuilder
 					    .path("socio/list")
-					    .queryParamIfPresent("id", Optional.ofNullable(id))
-					    .queryParamIfPresent("nome", Optional.ofNullable(nome))
-					    .queryParamIfPresent("cognome", Optional.ofNullable(cognome))
+					    .queryParamIfPresent("id",       Optional.ofNullable(id))
+					    .queryParamIfPresent("nome",     Optional.ofNullable(nome))
+					    .queryParamIfPresent("cognome",  Optional.ofNullable(cognome))
 					    .queryParamIfPresent("attivita", Optional.ofNullable(attivita))
 					    .build())
 					.retrieve()
