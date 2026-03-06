@@ -25,13 +25,18 @@
 			</thead>
 			<tbody>
 				<tr th:each="abb : ${socio.abbonamentos}">
-					<td >
-						<span  th:text="${#temporals.format(abb.dataInscizione, 'dd/MM/yyyy')}"> Data iscrizione</span>
+					<td>
+						<a th:href="@{removeAbbonamento(abbonamentoId=${abb.id}, socioId=${socio.id})}"
+								onclick="return confirm('Sei sicuro de vlore rimuovere questo abbonamento?')">
+							<span  th:text="${#temporals.format(abb.dataInscizione, 'dd/MM/yyyy')}"> Data iscrizione</span>
+						</a>
 					</td>
 					<td>
 						<li th:each="att : ${abb.attivita}">
-						
-							<span th:text="${att.description}"></span>
+							<a th:href="@{removeAttivitaAbbonamento(abbonamentoId=${abb.id},attivitaId=${att.id}, socioId=${socio.id})}"
+								onclick="return confirm('Sei sicuro de vlore rimuovere questa attività?')">
+								<span th:text="${att.description}"></span>
+							</a>
 						</li>
 						<a th:href="@{aggiungiAttivita(socioId=${socio.id},abbonamentoId=${abb.id})}"
 								class="btn btn-primary">Nuova attivita</a>

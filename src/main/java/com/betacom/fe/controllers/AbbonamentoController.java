@@ -97,10 +97,54 @@ public class AbbonamentoController {
 		log.debug("saveAttivitaAbbonamento {}", req);
 		
 		
+		
+		ResponseEntity<Resp> response = webclient.post()
+				.uri("atttivita/createAttivitaAbbonamento")
+				.bodyValue(req)
+				.exchangeToMono(resp -> resp.toEntity(Resp.class) )
+				.block();
+		
+		log.debug(response.toString());
 		return "redirect:/listAbbonamento?id=" + req.getSocioID();
 		
 	}
 	
+	@GetMapping("removeAttivitaAbbonamento")
+	public String removeAttivitaAbbonamento(@RequestParam(required = true) Integer abbonamentoId,
+			              @RequestParam(required = true) Integer attivitaId,
+			              @RequestParam(required = true) Integer socioId) {
+		log.debug("removeAttivitaAbbonamento {}/{}/{}", abbonamentoId, attivitaId, socioId);
+		
+		
+		Resp resp = webclient.delete()
+				 .uri("atttivita/deleteAttivitaAbbonamento/{abbonamentoId}/{attivitaId}", abbonamentoId, attivitaId)
+				 .retrieve()
+				 .bodyToMono(Resp.class)
+				 .block();
+		
+		log.debug(resp.toString());
+
+		return "redirect:/listAbbonamento?id=" + socioId;
+
+	}
 	
+
+	@GetMapping("removeAbbonamento")
+	public String removeAbbonamento(@RequestParam(required = true) Integer abbonamentoId, @RequestParam(required = true) Integer socioId ) {
+		log.debug("removeAbbonamento {}", abbonamentoId);
+		
+		
+		Resp resp = webclient.delete()
+				 .uri("abbonamento/delete/{abbonamentoId}", abbonamentoId)
+				 .retrieve()
+				 .bodyToMono(Resp.class)
+				 .block();
+		
+		log.debug(resp.toString());
+
+		return "redirect:/listAbbonamento?id=" + socioId;
+
+	}
+
 	
 }
