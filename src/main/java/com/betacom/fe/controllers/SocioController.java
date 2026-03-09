@@ -32,7 +32,7 @@ public class SocioController {
 	
 	private final WebClient clientWeb;
 
-	@GetMapping("/listSocio")
+	@GetMapping(value ={"/listSocio","/home"})
 	public ModelAndView listSocio(
 			@RequestParam(required = false) Integer id,
 			@RequestParam(required = false) String nome,
