@@ -6,12 +6,14 @@ import java.util.List;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.betacom.fe.dto.inputs.AbbonamentoReq;
 import com.betacom.fe.dto.inputs.AttivitaReq;
@@ -69,7 +71,7 @@ public class AbbonamentoController {
 	
 	@GetMapping("aggiungiAttivita")
 	public ModelAndView aggiungiAttivita(@RequestParam (required = true) Integer socioId, 
-						@RequestParam (required = true) Integer abbonamentoId) {
+						@RequestParam (required = true) Integer abbonamentoId, Model model) {
 		log.debug("aggiungiAttivita {}/{} ", socioId, abbonamentoId);
 		ModelAndView mav = new ModelAndView("aggiungiAttivita");
 		
@@ -93,7 +95,7 @@ public class AbbonamentoController {
 		return mav;
 	}
 	@PostMapping("saveAttivitaAbbonamento")
-	public String saveAttivitaAbbonamento(@ModelAttribute("param") AttivitaReq req) {
+	public String saveAttivitaAbbonamento(@ModelAttribute("param") AttivitaReq req ,  RedirectAttributes ra) {
 		log.debug("saveAttivitaAbbonamento {}", req);
 		
 		
@@ -105,6 +107,13 @@ public class AbbonamentoController {
 				.block();
 		
 		log.debug(response.toString());
+
+		if (!response.getStatusCode().is2xxSuccessful()) {
+			 ra.addFlashAttribute("errorMsg", response.getBody().getMsg());
+			 return "redirect:/aggiungiAttivita?socioId=" + req.getSocioID() + "&abbonamentoId=" + req.getAbbonamentID();
+			 
+		}
+		
 		return "redirect:/listAbbonamento?id=" + req.getSocioID();
 		
 	}

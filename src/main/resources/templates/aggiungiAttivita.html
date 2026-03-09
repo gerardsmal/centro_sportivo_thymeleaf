@@ -12,6 +12,12 @@
 
 	<div class="container mt-3" align="center">
 	
+		<div th:if="${errorMsg}" class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+  			<span th:text="${errorMsg}">*</span>
+  			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Chiudi"></button>
+		</div>
+	
+	
 		<form class="form.content" th:action="@{saveAttivitaAbbonamento}" th:object="${param}" 
 				method="post"
 				style="width:50%; margin:auto;">

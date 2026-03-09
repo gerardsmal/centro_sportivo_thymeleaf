@@ -12,26 +12,33 @@
 
 	<div class="conatainer mt-3" align="center">
 	<div class="col-md-6">
-		<table class="table table-secondary">
+	 <div class="card-header d-flex justify-content-between align-items-center">
+            <div>
+                <p class="mb-0">Detaglio abbonamenti</p>
+            </div>
+
+            <a th:href="@{createAbbonamento(id=${socio.id})}"
+               class="btn btn-primary">
+                Nuovo abbonamento
+            </a>
+        </div>
+		<table class="table table-secondary mt-2"> 
 			<thead>
-				<tr >
+				<tr align="center">
 					<th>Data inscrizione</th> 
-					<th>Attivita</th>
-					<th>
-						<a th:href="@{createAbbonamento(id=${socio.id})}" 
-								class="btn btn-primary">Nuovo abbonamento</a>
-					</th>
+					<th >Attivita</th>
 				</tr>		
 			</thead>
 			<tbody>
 				<tr th:each="abb : ${socio.abbonamentos}">
-					<td>
+					<td align="center">
 						<a th:href="@{removeAbbonamento(abbonamentoId=${abb.id}, socioId=${socio.id})}"
 								onclick="return confirm('Sei sicuro de vlore rimuovere questo abbonamento?')">
 							<span  th:text="${#temporals.format(abb.dataInscizione, 'dd/MM/yyyy')}"> Data iscrizione</span>
 						</a>
 					</td>
-					<td>
+					<td align="center">
+					<ul class="list-unstyled">
 						<li th:each="att : ${abb.attivita}">
 							<a th:href="@{removeAttivitaAbbonamento(abbonamentoId=${abb.id},attivitaId=${att.id}, socioId=${socio.id})}"
 								onclick="return confirm('Sei sicuro de vlore rimuovere questa attività?')">
@@ -40,7 +47,10 @@
 						</li>
 						<a th:href="@{aggiungiAttivita(socioId=${socio.id},abbonamentoId=${abb.id})}"
 								class="btn btn-primary">Nuova attivita</a>
+					
+					</ul>
 					</td>
+					
 				</tr>	
 			
 			
