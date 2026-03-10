@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-<title>Login</title>
+<title>Registazione</title>
 </head>
 <body>
 <body>
@@ -14,24 +14,26 @@
 		    	href="https://www.betacom.it/betacom-academy/">Centro Sportivo</a>
 		   </div>
 		 </nav>
-		 <form th:action="@{login}" method="post">
+		 <form th:action="@{/saveNuovoUtente}"  th:object="${req}"  method="post">
 		 <div align="center" class="row mb-4">
-		 	<h1>Login</h1>
-		 	<div th:if="${param.error}" style="color:red" class="mb-4">Invalid username password</div>
-
+		 	<h1>Registrazione</h1>
+			
+			<div th:if="${errorMsg}" class="alert alert-danger" th:text="${errorMsg}"></div>
+		 	
 		 	<div>
-		 		<input type="text" name="username" class="form-text" placeholder="user name" />		 
+		 		<input type="text" name="username"  th:field="*{userName}"  class="form-text" placeholder="user name" required/>		 
 		 	</div>		 
 		 	<div>
-		 		<input type="password" name="password" class="form-text" placeholder="Password" />		 
+		 		<input type="password" name="password" th:field="*{pwd}" class="form-text" placeholder="Password" required/>		 
 		 	</div>		 
 		 
 		 	<div>
-		 		<input type="submit" class="btn btn-sucess" value="Sign in"/> 	 
-		 	</div>
-		 	<div align="center" class="mt-2">
-		 		<a class="col-2" th:href="@{/registra}">Nuovo utente</a>
-		 	
+		 		<input type="text" name="email" th:field="*{email}" class="form-text" placeholder="indirizzo mail"/>		 
+		 	</div>		 
+
+
+		 	<div>
+		 		<button type="submit" class="btn btn-primary mt-3" >Registra</button> 	 
 		 	</div>		 
 		 </div>
 		 

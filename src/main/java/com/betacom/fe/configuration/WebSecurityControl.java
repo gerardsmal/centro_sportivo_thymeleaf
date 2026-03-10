@@ -23,7 +23,7 @@ public class WebSecurityControl {
 	    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
 			http.authorizeHttpRequests((requests) -> requests
 					.requestMatchers("/admin", "/admin/**").hasRole("ADMIN")  // url with admin only for user admin
-					.requestMatchers("/").permitAll()                         // other url are not protected
+					.requestMatchers("/", "/registra", "/saveNuovoUtente", "/login").permitAll()                         // other url are not protected
 					.anyRequest().authenticated()                             // all request must be autyentificated
 			)
 			.formLogin((form) -> form
