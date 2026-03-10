@@ -36,34 +36,34 @@ public class WebSecurityControl {
 		}
 	
 	@Bean
-	PasswordEncoder passwordEncoder() {
+	PasswordEncoder getPasswordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 	
-	@Bean
-  UserDetailsService userDetailsService() {
-	
-	List<UserDetails> userDetailsList = new ArrayList<UserDetails>();
-	
-	
-	
-	UserDetails user = 
-			User.withUsername("user")
-				.password(passwordEncoder().encode("pwd").toString())
-				.roles("USER")
-				.build();
-	
-	UserDetails admin = 
-			User.withUsername("admin")
-				.password(passwordEncoder().encode("admin").toString())
-				.roles("ADMIN")
-				.build();
-	
-	userDetailsList.add(user);
-	userDetailsList.add(admin);
-	
-	return new InMemoryUserDetailsManager(userDetailsList);
-}
+//	@Bean
+//  UserDetailsService userDetailsService() {
+//	
+//	List<UserDetails> userDetailsList = new ArrayList<UserDetails>();
+//	
+//	
+//	
+//	UserDetails user = 
+//			User.withUsername("user")
+//				.password(passwordEncoder().encode("pwd").toString())
+//				.roles("USER")
+//				.build();
+//	
+//	UserDetails admin = 
+//			User.withUsername("admin")
+//				.password(passwordEncoder().encode("admin").toString())
+//				.roles("ADMIN")
+//				.build();
+//	
+//	userDetailsList.add(user);
+//	userDetailsList.add(admin);
+//	
+//	return new InMemoryUserDetailsManager(userDetailsList);
+//}
 
 	
 	
